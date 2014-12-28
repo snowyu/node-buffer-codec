@@ -9,14 +9,13 @@
     "LICENSE-MIT",
     "index.js",
     "test",
-    "abstract",
     "lib"
   ],
   "scripts": {
     "test": "grunt test"
   },
   "dependencies": {
-    "abstract-object": "1.x",
+    "abstract-object": "1.x"
   },
   "devDependencies": {
     "chai": "~1.10.0",
