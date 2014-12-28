@@ -19,10 +19,10 @@ Add the String/Buffer codec to the [abstract-nosql](https://github.com/snowyu/ab
   * decodeBufer(buffer, start, end, encoding='utf8'):
     * decode the buffer. return the decoded value.
     * the default start is 0, end is buffer.length - start.
-  * isBuffer(): it's true if the Codec implenments \_encodeBuffer/\_decodeBuffer only
-  * if the Codec implenments \_encodeBuffer/\_decodeBuffer only.
-    * bufferSize: the default max interal buffer size to encodeString data.
-    * buffer: the interal buffer instance to encodeString data.
+  * buffer: the Buffer instance. 
+    * it's avaiable only when constructor passed bufferSize argument or \_encodeBuffer implenmented only.
+  * bufferSize: the default max interal buffer size.
+  * isBuffer(): it's true if have a interal buffer.
 
 
 
@@ -68,13 +68,20 @@ class JsonCodec
 
 # Using:
 
+# get the JsonCodec Class
+JsonCodec = Codec['Json']
+
 # get the global JsonCodec instance from the Codec
-json=Codec('json')
+json = Codec('json')
+# or:
+json = JsonCodec()
+
+JsonCodec().should.be.equal Codec('json')
 
 # create a new JsonCodec instance.
-JsonCodec = Codec['Json']
-json = new JsonCodec()
+json2 = new JsonCodec()
 
+json2.should.not.be.equal json
 
 # reuse this buffer instead of create every once. 
 buf = new Buffer(8192)

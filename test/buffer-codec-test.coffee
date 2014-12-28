@@ -25,14 +25,20 @@ describe "Codec", ->
 
       constructor: -> return super
       _encodeBuffer: ->
-    getClass = (aName, expectedClass)->
-      MyCodec = Codec[aName]
-      should.exist MyCodec
-      MyCodec.should.be.equal expectedClass
-      myCodec = MyCodec()
+    testCodecInstance = (myCodec, expectedClass, bufSize)->
       should.exist myCodec
       myCodec.should.be.instanceOf expectedClass
       myCodec.should.be.instanceOf Codec
+      if bufSize > 0
+        myCodec.bufferSize.should.be.equal bufSize
+        Buffer.isBuffer(myCodec.buffer).should.be.ok "should has Buffer"
+        myCodec.buffer.should.has.length.at.least bufSize
+    getClass = (aName, expectedClass, bufSize)->
+      MyCodec = Codec[aName]
+      should.exist MyCodec
+      MyCodec.should.be.equal expectedClass
+      myCodec = MyCodec(bufSize)
+      testCodecInstance myCodec, expectedClass, bufSize
       myCodec.should.be.equal Codec(aName)
       MyCodec
     it "should have a default bufferSize property", ->
@@ -71,23 +77,27 @@ describe "Codec", ->
       describe ".constructor", ->
         it "should get a global codec object instance", ->
           MyCodec = getClass('MyNew', MyNewCodec)
+        it "should get a global codec object instance with specified bufferSize", ->
+          myCodec = Codec('MyNew', 9131)
+          testCodecInstance(myCodec, MyNewCodec, 9131)
+          myCodec.should.be.equal MyNewCodec()
+        it "should get a global codec object instance with specified bufferSize(encodeBuffer)", ->
+          myCodec = Codec('MyBuffer', 9130)
+          testCodecInstance(myCodec, MyBufferCodec, 9130)
+          myCodec.should.be.equal MyBufferCodec()
+        it "should get a global codec object instance with specified bufferSize From the CodecClass", ->
+          MyCodec = getClass('MyBuffer', MyBufferCodec, 1930)
         it "should create a new codec object instance", ->
           MyCodec = getClass('MyNew', MyNewCodec)
           should.exist MyCodec
           myCodec = new MyCodec()
-          should.exist myCodec
-          myCodec.should.be.instanceOf MyNewCodec
-          myCodec.should.be.instanceOf Codec
+          testCodecInstance myCodec, MyNewCodec
           myCodec.should.be.not.equal Codec("myNew")
         it "should create a new codec object instance with specified bufferSize", ->
-          MyCodec = getClass('MyBuffer', MyBufferCodec)
+          MyCodec = getClass('MyBuffer', MyBufferCodec, 9110)
           myCodec = new MyCodec(1234)
-          should.exist myCodec
-          myCodec.should.be.instanceOf MyBufferCodec
-          myCodec.should.be.instanceOf Codec
-          myCodec.should.be.not.equal Codec("myBuffer")
-          myCodec.bufferSize.should.be.equal 1234
-          Buffer.isBuffer(myCodec.buffer).should.be.ok "isBuffer"
+          testCodecInstance myCodec, MyBufferCodec, 1234
+          myCodec.should.be.not.equal Codec("MyBuffer")
 
 describe "JsonCodec", ->
   json = Codec('json')

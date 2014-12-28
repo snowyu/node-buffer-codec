@@ -18,6 +18,7 @@ Errors.InvalidUtf8Error = InvalidUtf8Error
 module.exports = class Codec
   @bufferSize: 8192
   @_codecs: {}
+  codecs = Codec._codecs
   constructor: (aCodecName, aBufferSize)->
     if isNumber aCodecName
       aBufferSize = aCodecName
@@ -25,13 +26,16 @@ module.exports = class Codec
     if not (this instanceof Codec)
       # arguments.callee is forbidden if strict mode enabled.
       try aCodecName = Codec.getNameFromClass(arguments.callee.caller) unless aCodecName
-      return Codec._codecs[aCodecName.toLowerCase()]
+      result = codecs[aCodecName.toLowerCase()]
+      result.init(aBufferSize) if result and aBufferSize > 0
+      return result
     else
       @init(aBufferSize)
-      #aCodecName = Codec.getNameFromClass(this.constructor) unless aCodecName
-  init: (aBufferSize = Codec.bufferSize)->
-    if @_encodeBuffer
-      @buffer = new Buffer(aBufferSize)
+  init: (aBufferSize)->
+    if @_encodeBuffer or aBufferSize > 0
+      aBufferSize ||= Codec.bufferSize
+      if not @buffer or aBufferSize > @buffer.length
+        @buffer = new Buffer(aBufferSize)
       @bufferSize = aBufferSize
   isBuffer: ()->
     @buffer?
