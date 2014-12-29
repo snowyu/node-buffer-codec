@@ -17,6 +17,13 @@ Errors.InvalidUtf8Error = InvalidUtf8Error
 
 module.exports = class Codec
   @bufferSize: 8192
+  @getBuffer: (aBufferSize) ->
+    if not Codec.buffer or Codec.buffer.length < aBufferSize
+      aBufferSize ||= Codec.bufferSize
+      Codec.buffer = new Buffer(aBufferSize)
+      Codec.bufferSize = aBufferSize
+      
+    Codec.buffer
   @_codecs: {}
   codecs = Codec._codecs
   constructor: (aCodecName, aBufferSize)->
@@ -44,7 +51,7 @@ module.exports = class Codec
       @_encodeString value
     else if @_encodeBuffer
       len = @_encodeBuffer(value, @buffer)
-      @buffer.toString(null, 0, len)
+      @buffer.toString(undefined, 0, len)
     else
       throw new NotImplementedError()
   decodeString: (str)->
@@ -61,7 +68,7 @@ module.exports = class Codec
     else if @_encodeString
       s = @_encodeString(value)
       if Buffer.isBuffer destBuffer
-        destBuffer.write(s, offset, null, encoding)
+        destBuffer.write(s, offset, undefined, encoding)
       else
         Codec.getByteLen s
     else
@@ -85,14 +92,13 @@ module.exports = class Codec
     inherits aCodecClass, aParentCodecClass
     codecName = Codec.getNameFromClass(aCodecClass)
     lowerName = codecName.toLowerCase()
-    codecs = Codec._codecs
     if isInheritedFrom(aCodecClass, Codec) and not codecs.hasOwnProperty(lowerName)
       Codec[codecName] = aCodecClass
       codecs[lowerName] = createObject aCodecClass, aBufferSize
     else
       false
   @unregister: (aCodecName)->
-    delete Codec._codecs[aCodecName.toLowerCase()]
+    delete codecs[aCodecName.toLowerCase()]
   ###
    * Count bytes in a string's UTF-8 representation.
    *

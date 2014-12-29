@@ -123,7 +123,7 @@ describe "JsonCodec", ->
       data = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
       buf = new Buffer(4096)
       len = json.encodeBuffer data, buf
-      buf.toString(null, 0, len).should.be.equal JSON.stringify(data)
+      buf.toString(undefined, 0, len).should.be.equal JSON.stringify(data)
   describe ".decodeBuffer", ->
     it "should decode a buffer", ->
       expected = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
