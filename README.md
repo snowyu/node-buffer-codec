@@ -8,10 +8,8 @@ Add the String/Buffer codec to the [abstract-nosql](https://github.com/snowyu/ab
 
 * Codec
   * name: the codec name.
-  * encode(value): encode the value. return the encoded string.
-  * decode(value): the value is string/buffer. return the the decoded value.
   * encodeString(value): encode the value. return the encoded string. 
-  * decodeString(value): decode the string(value). return the decoded value. 
+  * decodeString(aString): decode the string(value). return the decoded value. 
   * encodeBuffer(value, destBuffer, offset=0, encoding='utf8'): 
     * encode value to the destBuffer. return the encoded length.
     * it just return the encoded byte length if the destBuffer is null
@@ -104,3 +102,19 @@ bufLen = json.encodeBuffer({a:1,b:2}, buf)
 data = json.decodeBuffer(buf, 0, bufLen)
 
 ```
+
+## Codec List:
+
+* Text Codec: encode via toString() , decode return the data directly.
+  * Json Codec: encode via JSON.stringify(.toJSON), decode via JSON.parse
+* Binary Codec:
+  * encodeBuffer: encode string or array to a buffer.
+  * decodeBuffer: return the buffer directly.
+  * encodeString: 
+    * result is the same string if value is string
+    * result is ascii string if value is array, the number element in array saved is (element & 0xFF)
+      if element is not number, saved 0 instead.
+  * decodeString: return the same string.
+
+
+
