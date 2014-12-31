@@ -58,8 +58,18 @@ you should implenment:
 Codec = require("buffer-codec")
 register = Codec.register
 
+class TextCodec
+  register TextCodec
+
+  _encodeString: (data)->
+    if not data? or Buffer.isBuffer data
+      data
+    else
+      String(data)
+  _decodeString: (data)->data
+
 class JsonCodec
-  register JsonCodec, Codec
+  register JsonCodec, TextCodec
 
   constructor: -> return super
   _encodeString: JSON.stringify
@@ -69,7 +79,10 @@ class JsonCodec
 # Using:
 
 # get the JsonCodec Class
-JsonCodec = Codec['Json']
+# lowercase name only here:
+JsonCodec = Codec['json']
+# or
+JsonCodec = TextCodec['json']
 
 # get the global JsonCodec instance from the Codec
 json = Codec('json')

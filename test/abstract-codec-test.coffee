@@ -3,7 +3,7 @@ sinon           = require 'sinon'
 sinonChai       = require 'sinon-chai'
 should          = chai.should()
 expect          = chai.expect
-Codec           = require '../src/buffer-codec'
+Codec           = require '../src/abstract-codec'
 Errors          = require 'abstract-object/Error'
 util            = require 'abstract-object/util'
 inherits        = util.inherits
@@ -34,7 +34,7 @@ describe "Codec", ->
         Buffer.isBuffer(myCodec.buffer).should.be.ok "should has Buffer"
         myCodec.buffer.should.has.length.at.least bufSize
     getClass = (aName, expectedClass, bufSize)->
-      MyCodec = Codec[aName]
+      MyCodec = Codec[aName.toLowerCase()]
       should.exist MyCodec
       MyCodec.should.be.equal expectedClass
       myCodec = MyCodec(bufSize)
@@ -62,9 +62,11 @@ describe "Codec", ->
           myCodec.should.be.instanceOf MyNewSubCodec
           myCodec.should.be.instanceOf MyNewCodec
           myCodec.should.be.instanceOf Codec
+          MyCodec = getClass 'MyNew', MyNewCodec
+          MyCodec.should.have.property 'mynewsub', MyNewSubCodec
         it "should register a new Codec Class with parent Codec Class and specified buffSize.", ->
           class MyBufferSubCodec
-            register(MyBufferSubCodec, MyBufferCodec, 4120).should.be.ok
+            register(MyBufferSubCodec, MyBufferCodec, 32).should.be.ok
 
             constructor: -> return super
 
@@ -73,20 +75,20 @@ describe "Codec", ->
           myCodec.should.be.instanceOf MyBufferSubCodec
           myCodec.should.be.instanceOf MyBufferCodec
           myCodec.should.be.instanceOf Codec
-          myCodec.bufferSize.should.be.equal 4120
+          myCodec.bufferSize.should.be.equal 32
       describe ".constructor", ->
         it "should get a global codec object instance", ->
           MyCodec = getClass('MyNew', MyNewCodec)
         it "should get a global codec object instance with specified bufferSize", ->
-          myCodec = Codec('MyNew', 9131)
-          testCodecInstance(myCodec, MyNewCodec, 9131)
+          myCodec = Codec('MyNew', 123)
+          testCodecInstance(myCodec, MyNewCodec, 123)
           myCodec.should.be.equal MyNewCodec()
         it "should get a global codec object instance with specified bufferSize(encodeBuffer)", ->
-          myCodec = Codec('MyBuffer', 9130)
-          testCodecInstance(myCodec, MyBufferCodec, 9130)
+          myCodec = Codec('MyBuffer', 33)
+          testCodecInstance(myCodec, MyBufferCodec, 33)
           myCodec.should.be.equal MyBufferCodec()
         it "should get a global codec object instance with specified bufferSize From the CodecClass", ->
-          MyCodec = getClass('MyBuffer', MyBufferCodec, 1930)
+          MyCodec = getClass('MyBuffer', MyBufferCodec, 16)
         it "should create a new codec object instance", ->
           MyCodec = getClass('MyNew', MyNewCodec)
           should.exist MyCodec
@@ -94,38 +96,9 @@ describe "Codec", ->
           testCodecInstance myCodec, MyNewCodec
           myCodec.should.be.not.equal Codec("myNew")
         it "should create a new codec object instance with specified bufferSize", ->
-          MyCodec = getClass('MyBuffer', MyBufferCodec, 9110)
-          myCodec = new MyCodec(1234)
-          testCodecInstance myCodec, MyBufferCodec, 1234
+          MyCodec = getClass('MyBuffer', MyBufferCodec, 12)
+          myCodec = new MyCodec(13)
+          testCodecInstance myCodec, MyBufferCodec, 13
           myCodec.should.be.not.equal Codec("MyBuffer")
 
-describe "JsonCodec", ->
-  json = Codec('json')
-  
-  jsonToBuffer= (value)->
-    len = json.encodeBuffer value
-    buf = new Buffer(len)
-    json.encodeBuffer(value, buf).should.be.equal len
-    buf.toString().should.be.equal JSON.stringify(value)
-    buf
-  describe ".encodeString", ->
-    it "should encode value to a string", ->
-      data = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
-      str = json.encode data
-      str.should.be.equal JSON.stringify(data)
-  describe ".decodeString", ->
-    it "should decode a string", ->
-      expected = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
-      str = JSON.stringify expected
-      json.decode(str).should.be.deep.equal expected
-  describe ".encodeBuffer", ->
-    it "should encode value to buffer", ->
-      data = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
-      buf = new Buffer(4096)
-      len = json.encodeBuffer data, buf
-      buf.toString(undefined, 0, len).should.be.equal JSON.stringify(data)
-  describe ".decodeBuffer", ->
-    it "should decode a buffer", ->
-      expected = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
-      buf = jsonToBuffer expected
-      json.decodeBuffer(buf).should.be.deep.equal expected
+

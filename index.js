@@ -1,1 +1,1 @@
-module.exports   = require("./lib/buffer-codec")
+module.exports   = require("./lib/codec")

@@ -2,7 +2,6 @@
 util                  = require("abstract-object/lib/util")
 inherits              = util.inherits
 isInheritedFrom       = util.isInheritedFrom
-isArray               = util.isArray
 isNumber              = util.isNumber
 createObject          = util.createObject
 Errors                = require('abstract-object/Error')
@@ -16,7 +15,7 @@ InvalidUtf8Error      = createError("InvalidUtf8", 0x81, InvalidFormatError)
 Errors.InvalidUtf8Error = InvalidUtf8Error
 
 module.exports = class Codec
-  @bufferSize: 8192
+  @bufferSize: 1024
   @getBuffer: (aBufferSize) ->
     if not Codec.buffer or Codec.buffer.length < aBufferSize
       aBufferSize ||= Codec.bufferSize
@@ -32,9 +31,16 @@ module.exports = class Codec
       aCodecName = null
     if not (this instanceof Codec)
       # arguments.callee is forbidden if strict mode enabled.
-      try aCodecName = Codec.getNameFromClass(arguments.callee.caller) unless aCodecName
-      result = codecs[aCodecName.toLowerCase()]
-      result.init(aBufferSize) if result and aBufferSize > 0
+      if not aCodecName
+        try aCodecName = Codec.getNameFromClass(arguments.callee.caller)
+      aCodecName = aCodecName.toLowerCase()
+      result = codecs[aCodecName]
+      if result instanceof Codec
+        result.init(aBufferSize) if aBufferSize > 0
+      else if result
+        result = Math.max result, aBufferSize if aBufferSize > 0
+        result = undefined if result < 0 or result is NaN
+        result = codecs[aCodecName] = createObject Codec[aCodecName], result
       return result
     else
       @init(aBufferSize)
@@ -91,10 +97,16 @@ module.exports = class Codec
   @register: (aCodecClass, aParentCodecClass = Codec, aBufferSize)->
     inherits aCodecClass, aParentCodecClass
     codecName = Codec.getNameFromClass(aCodecClass)
+    aCodecClass::name = codecName
     lowerName = codecName.toLowerCase()
     if isInheritedFrom(aCodecClass, Codec) and not codecs.hasOwnProperty(lowerName)
-      Codec[codecName] = aCodecClass
-      codecs[lowerName] = createObject aCodecClass, aBufferSize
+      aParentCodecClass[lowerName] = aCodecClass
+      if aParentCodecClass isnt Codec
+        Codec[lowerName] = aCodecClass
+      if aBufferSize > 0
+        codecs[lowerName] = aBufferSize
+      else
+        codecs[lowerName] = -1 #createObject aCodecClass, aBufferSize
     else
       false
   @unregister: (aCodecName)->
@@ -210,16 +222,5 @@ module.exports = class Codec
       else
         throw new InvalidUtf8Error('utf8:Invalid code point')
     return bytes
-
-register = Codec.register
-
-class JsonCodec
-  register JsonCodec, Codec
-
-  _encodeString: JSON.stringify
-  _decodeString: JSON.parse
-
-
-
 
 
