@@ -3,12 +3,13 @@ util        = require("abstract-object/lib/util")
 isString    = util.isString
 Codec       = module.exports = require './abstract-codec'
 register    = Codec.register
+isBuffer    = Buffer.isBuffer
 
 class TextCodec
   register TextCodec, Codec
 
   _encodeString: (data)->
-    if not data? or Buffer.isBuffer data
+    if not data? or isBuffer data
       data
     else
       String(data)
@@ -31,9 +32,9 @@ class BinaryCodec
     if not data?
       0
     else
-      isBufferData = Buffer.isBuffer data
-      if Buffer.isBuffer destBuffer
-        if isBufferData
+      dataIsBuffer = isBuffer data
+      if isBuffer destBuffer
+        if dataIsBuffer
           len = Math.min data.length, destBuffer.length - offset
           data.copy destBuffer, offset, 0, len
           len
@@ -47,7 +48,7 @@ class BinaryCodec
               destBuffer.writeUInt8 v, i+offset, true
           arr.length
       else
-        if isBufferData
+        if dataIsBuffer
           data.length
         else if isString data
           Codec.getByteLen data

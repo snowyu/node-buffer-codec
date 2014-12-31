@@ -25,22 +25,35 @@ describe "TextCodec", ->
       data = [1,2,3]
       str = codec.encode data
       str.should.be.equal String(data)
+    it "should encode buffer as buffer", ->
+      data = new Buffer('234')
+      result = codec.encode data
+      result.should.be.equal data
   describe ".decodeString", ->
     it "should decode a string", ->
       expected = 'hi,world'
       str = String expected
       codec.decode(str).should.be.deep.equal expected
+    it "should decode a buffer as buffer", ->
+      expected = new Buffer('ho wool')
+      result = codec.decode(expected) 
+      result.should.be.equal expected
   describe ".encodeBuffer", ->
     it "should encode value to buffer", ->
       data = [1,2,3]
       buf = new Buffer(4096)
       len = codec.encodeBuffer data, buf
       buf.toString(undefined, 0, len).should.be.equal String(data)
+    it "should encode buffer as buffer", ->
+      data = new Buffer [1,2,3]
+      buf = new Buffer(4096)
+      len = codec.encodeBuffer data, buf
+      buf.toString(undefined, 0, len).should.be.equal data.toString()
   describe ".decodeBuffer", ->
     it "should decode a buffer", ->
       expected = 'ok,hi!'
       buf = toBuffer expected
-      codec.decodeBuffer(buf).should.be.deep.equal expected
+      codec.decodeBuffer(buf).should.be.equal expected
 
   describe "JsonCodec", ->
     json = Codec('json')

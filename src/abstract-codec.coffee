@@ -11,6 +11,7 @@ NotImplementedError   = Errors.NotImplementedError
 InvalidArgumentError  = Errors.InvalidArgumentError
 InvalidFormatError    = Errors.InvalidFormatError
 InvalidUtf8Error      = createError("InvalidUtf8", 0x81, InvalidFormatError)
+isBuffer              = Buffer.isBuffer
 
 Errors.InvalidUtf8Error = InvalidUtf8Error
 
@@ -72,11 +73,19 @@ module.exports = class Codec
     if @_encodeBuffer
       @_encodeBuffer value, destBuffer, offset, encoding
     else if @_encodeString
-      s = @_encodeString(value)
-      if Buffer.isBuffer destBuffer
-        destBuffer.write(s, offset, undefined, encoding)
+      result = @_encodeString(value)
+      resultIsBuffer = isBuffer result
+      if isBuffer destBuffer
+        if resultIsBuffer
+          len = Math.min result.length, destBuffer.length - offset
+          result.copy destBuffer, offset, 0, len
+          len
+        else
+          destBuffer.write(result, offset, undefined, encoding)
+      else if resultIsBuffer
+        result.length
       else
-        Codec.getByteLen s
+        Codec.getByteLen result
     else
       throw new NotImplementedError()
   decodeBuffer: (buffer, start=0, end, encoding='utf8')->
