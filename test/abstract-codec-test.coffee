@@ -105,7 +105,7 @@ describe "Codec", ->
       describe ".aliases", ->
         class MyAliasCodec
           register MyAliasCodec, Codec
-           aliases MyAliasCodec, 'alia1', 'other'
+          aliases  MyAliasCodec, 'alia1', 'other'
 
           constructor: -> return super
 
