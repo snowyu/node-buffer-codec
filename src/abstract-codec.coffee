@@ -25,7 +25,9 @@ module.exports = class Codec
       
     Codec.buffer
   @_codecs: {}
+  @_aliases: {}
   codecs = Codec._codecs
+  aliases = Codec._aliases
   constructor: (aCodecName, aBufferSize)->
     if isNumber aCodecName
       aBufferSize = aCodecName
@@ -36,6 +38,11 @@ module.exports = class Codec
         try aCodecName = Codec.getNameFromClass(arguments.callee.caller)
       aCodecName = aCodecName.toLowerCase()
       result = codecs[aCodecName]
+      if not result?
+        alias = aCodecName
+        aCodecName = Codec.getRealNameFromAlias alias
+        if aCodecName
+          result = codecs[aCodecName]
       if result instanceof Codec
         result.init(aBufferSize) if aBufferSize > 0
       else if result
@@ -103,6 +110,15 @@ module.exports = class Codec
     throw new InvalidArgumentError('the codec(construcor) has no name error.') unless len
     codecName = codecName.substring(0, len-5) if len > 5 and codecName.substring(len-5).toLowerCase() is 'codec'
     codecName
+  @getRealNameFromAlias: (alias)->
+    aliases[alias]
+  @alias: (aCodecClass, aAliases...)->
+    codecName = Codec.getNameFromClass(aCodecClass)
+    lowerName = codecName.toLowerCase()
+    if codecs.hasOwnProperty(lowerName)
+      for alias in aAliases
+        aliases[alias] = lowerName
+  @aliases: @alias
   @register: (aCodecClass, aParentCodecClass = Codec, aBufferSize)->
     inherits aCodecClass, aParentCodecClass
     codecName = Codec.getNameFromClass(aCodecClass)

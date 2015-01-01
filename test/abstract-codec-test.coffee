@@ -14,7 +14,8 @@ chai.use(sinonChai)
 describe "Codec", ->
     #before (done)->
     #after (done)->
-    register = Codec.register
+    register  = Codec.register
+    aliases   = Codec.aliases
 
     class MyNewCodec
       register(MyNewCodec).should.be.ok
@@ -101,4 +102,17 @@ describe "Codec", ->
           testCodecInstance myCodec, MyBufferCodec, 13
           myCodec.should.be.not.equal Codec("MyBuffer")
 
+      describe ".aliases", ->
+        class MyAliasCodec
+          register MyAliasCodec, Codec
+           aliases MyAliasCodec, 'alia1', 'other'
+
+          constructor: -> return super
+
+        it "should get a global codec object instance via alias", ->
+          myCodec = Codec('alia1')
+          testCodecInstance myCodec, MyAliasCodec
+          other = Codec('other')
+          testCodecInstance myCodec, MyAliasCodec
+          other.should.equal myCodec
 
