@@ -3,10 +3,12 @@ util        = require("abstract-object/lib/util")
 isString    = util.isString
 Codec       = module.exports = require './abstract-codec'
 register    = Codec.register
+aliases     = Codec.aliases
 isBuffer    = Buffer.isBuffer
 
 class TextCodec
   register TextCodec, Codec
+  aliases  TextCodec, 'utf8', 'utf-8'
 
   _encodeString: (data)->
     if not data? or isBuffer data
