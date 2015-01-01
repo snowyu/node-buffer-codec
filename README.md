@@ -52,12 +52,15 @@ you should implenment:
     * decode the buffer. return the decoded value.
     * the default start is 0, end is buffer.length - start.
 
+
 ```coffee
 Codec = require("buffer-codec")
 register = Codec.register
+aliases  = Codec.aliases
 
 class TextCodec
   register TextCodec
+  aliases  TextCodec, 'utf8', 'utf-8'
 
   _encodeString: (data)->
     if not data? or Buffer.isBuffer data
