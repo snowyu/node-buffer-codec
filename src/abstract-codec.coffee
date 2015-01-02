@@ -32,6 +32,9 @@ module.exports = class Codec
     if isNumber aCodecName
       aBufferSize = aCodecName
       aCodecName = null
+    else if aCodecName instanceof Codec
+      aCodecName.init(aBufferSize) if aBufferSize > 0
+      return aCodecName
     if not (this instanceof Codec)
       # arguments.callee is forbidden if strict mode enabled.
       if not aCodecName
