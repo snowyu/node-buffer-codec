@@ -101,6 +101,15 @@ describe "Codec", ->
           myCodec = new MyCodec(13)
           testCodecInstance myCodec, MyBufferCodec, 13
           myCodec.should.be.not.equal Codec("MyBuffer")
+        it "should bypass the codec object instance", ->
+          myCodec = Codec('MyBuffer', 33)
+          my = Codec(myCodec)
+          my.should.be.equal myCodec
+        it "should bypass the codec object instance and expand the bufferSize", ->
+          myCodec = Codec('MyBuffer', 33)
+          my = Codec(myCodec, 900)
+          my.should.be.equal myCodec
+          my.bufferSize.should.at.least 900
 
       describe ".aliases", ->
         class MyAliasCodec
