@@ -23,20 +23,20 @@ describe "TextCodec", ->
   describe ".encodeString", ->
     it "should encode value to a string", ->
       data = [1,2,3]
-      str = codec.encode data
+      str = codec.encodeString data
       str.should.be.equal String(data)
     it "should encode buffer as buffer", ->
       data = new Buffer('234')
-      result = codec.encode data
+      result = codec.encodeString data
       result.should.be.equal data
   describe ".decodeString", ->
     it "should decode a string", ->
       expected = 'hi,world'
       str = String expected
-      codec.decode(str).should.be.deep.equal expected
+      codec.decodeString(str).should.be.deep.equal expected
     it "should decode a buffer as buffer", ->
       expected = new Buffer('ho wool')
-      result = codec.decode(expected) 
+      result = codec.decodeString(expected) 
       result.should.be.equal expected
   describe ".encodeBuffer", ->
     it "should encode value to buffer", ->
@@ -54,6 +54,34 @@ describe "TextCodec", ->
       expected = 'ok,hi!'
       buf = toBuffer expected
       codec.decodeBuffer(buf).should.be.equal expected
+  describe ".encode", ->
+    it "should encode value to a string", ->
+      data = [1,2,3]
+      str = codec.encode data
+      str.should.be.equal String(data)
+    it "should encode value to a specified buffer", ->
+      data = "some thing need encode"
+      # get the byte length of encoded data
+      len = codec.encode data, {buffer: -1}
+      len.should.be.a "number"
+      len.should.be.greaterThan 0
+      result = new Buffer(len)
+      codec.encode data, {buffer: result}
+      result.toString().should.be.equal data
+    it "should encode value to the buffer", ->
+      data = "some thing need encode"
+      result = codec.encode data, {buffer: true}
+      result.toString().should.be.equal data
+  describe ".decode", ->
+    it "should decode a buffer", ->
+      expected = 'ok,hi!'
+      buf = toBuffer expected
+      codec.decode(buf).should.be.equal expected
+    it "should decode a atring", ->
+      expected = 'ok,hi!'
+      codec.decode(expected).should.be.equal expected
+  
+  
 
   describe "JsonCodec", ->
     json = Codec('json')
@@ -67,13 +95,13 @@ describe "TextCodec", ->
     describe ".encodeString", ->
       it "should encode value to a string", ->
         data = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
-        str = json.encode data
+        str = json.encodeString data
         str.should.be.equal JSON.stringify(data)
     describe ".decodeString", ->
       it "should decode a string", ->
         expected = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
         str = JSON.stringify expected
-        json.decode(str).should.be.deep.equal expected
+        json.decodeString(str).should.be.deep.equal expected
     describe ".encodeBuffer", ->
       it "should encode value to buffer", ->
         data = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
@@ -85,6 +113,32 @@ describe "TextCodec", ->
         expected = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
         buf = jsonToBuffer expected
         json.decodeBuffer(buf).should.be.deep.equal expected
+    describe ".encode", ->
+      it "should encode value to a string", ->
+        data = [1,2,3]
+        str = json.encode data
+        str.should.be.equal JSON.stringify(data)
+      it "should encode value to a specified buffer", ->
+        data = {data:"some thing need encode", int:23}
+        # get the byte length of encoded data
+        len = json.encode data, {buffer: -1}
+        len.should.be.a "number"
+        len.should.be.greaterThan 0
+        result = new Buffer(len)
+        json.encode data, {buffer: result}
+        result.toString().should.be.equal JSON.stringify(data)
+      it "should encode value to the buffer", ->
+        expected = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
+        result = json.encode expected, {buffer: true}
+        result.toString().should.be.equal JSON.stringify(expected)
+    describe ".decode", ->
+      it "should decode a buffer", ->
+        expected = {a: 1, b:2, cKey:"hi world C", arr:[1,2,"as"]}
+        buf = jsonToBuffer expected
+        json.decode(buf).should.be.deep.equal expected
+      it "should decode a atring", ->
+        expected = "ok,hi!"
+        json.decode(JSON.stringify(expected)).should.be.deep.equal expected
 
 describe "BinaryCodec", ->
   codec = Codec('binary', 4096)
@@ -100,17 +154,17 @@ describe "BinaryCodec", ->
   describe ".encodeString", ->
     it "should encode string to a string", ->
       data = "string A"
-      str = codec.encode data
+      str = codec.encodeString data
       str.should.be.equal data
     it "should encode array to a string", ->
       data = [1,2,3]
-      str = codec.encode data
+      str = codec.encodeString data
       str.should.be.equal "\x01\x02\x03"
   describe ".decodeString", ->
     it "should decode a string", ->
       expected = 'hi,world'
       str = 'hi,world'
-      codec.decode(str).toString().should.be.equal expected
+      codec.decodeString(str).toString().should.be.equal expected
   describe ".encodeBuffer", ->
     it "should encode array to buffer", ->
       data = [1,2,3]
@@ -127,3 +181,30 @@ describe "BinaryCodec", ->
       expected = 'ok,hi!'
       buf = toBuffer expected
       codec.decodeBuffer(buf).toString().should.be.equal expected
+  describe ".encode", ->
+    it "should encode value to a string", ->
+      data = [1,2,3]
+      str = codec.encode data
+      str.should.be.equal "\x01\x02\x03"
+    it "should encode value to a specified buffer", ->
+      data = "some thing need encode"
+      # get the byte length of encoded data
+      len = codec.encode data, {buffer: -1}
+      len.should.be.a "number"
+      len.should.be.greaterThan 0
+      result = new Buffer(len)
+      codec.encode data, {buffer: result}
+      result.toString().should.be.equal data
+    it "should encode value to the buffer", ->
+      data = "some thing need encode"
+      result = codec.encode data, {buffer: true}
+      result.toString().should.be.equal data
+  describe ".decode", ->
+    it "should decode a buffer", ->
+      expected = 'ok,hi!'
+      buf = toBuffer expected
+      codec.decode(buf).toString().should.be.equal expected
+    it "should decode a atring", ->
+      expected = 'ok,hi!'
+      codec.decode(expected).toString().should.be.equal expected
+  

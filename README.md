@@ -8,13 +8,28 @@ Add the String/Buffer codec to the [abstract-nosql](https://github.com/snowyu/ab
 
 * Codec
   * name: the codec name.
+  * encode(value, options): encode the value. 
+    * return the encoded string, or encoded buffer if options.buffer is true 
+      * note: the return encoded buffer is a global buffer instance on the codec.
+    * return the byte length of encoded value if options.buffer is true or is a Buffer.
+    * options.encoding *(string or codec instance)*: return the value directly if no encoding
+    * options.buffer: the destBuffer or true.
+      * options.bufferEncoding *(string)*: the Buffer encoding used via Buffer. defaults to 'utf8' 
+      * options.bufferOffset *(int)*: the offset of destBuffer. defaults to 0. if options.buffer is a Buffer.
+  * decode(value, options): decode the value.
+    * return the decoded value. 
+    * options.encoding *(string or codec instance)*: return the value directly if no encoding
+    * if value is Buffer:
+      * options.bufferEncoding *(string)*: the Buffer encoding used via value is Buffer. defaults to 'utf8' 
+      * options.bufferStart *(int)*: the start of value. defaults to 0.
+      * options.bufferEnd *(int)*: the end of value. defaults to value.length - options.bufferStart.
   * encodeString(value): encode the value. return the encoded string. 
   * decodeString(aString): decode the string(value). return the decoded value. 
-  * encodeBuffer(value, destBuffer, offset=0, encoding='utf8'): 
+  * encodeBuffer(value, destBuffer, offset=0, encoding='utf8'):
     * encode value to the destBuffer. return the encoded length.
     * it just return the encoded byte length if the destBuffer is null
     * the default start is 0 offset of destBuffer.
-  * decodeBufer(buffer, start, end, encoding='utf8'):
+  * decodeBuffer(buffer, start, end, encoding='utf8'):
     * decode the buffer. return the decoded value.
     * the default start is 0, end is buffer.length - start.
   * buffer: the Buffer instance. 

@@ -116,3 +116,58 @@ describe "Codec", ->
           testCodecInstance myCodec, MyAliasCodec
           other.should.equal myCodec
 
+      class MyCodec
+        register MyCodec
+        encode: sinon.spy((v)->v+'encode')
+        decode: sinon.spy((v)->v+'decode')
+        constructor: -> return super
+      describe ".encode", ->
+
+        it "should return value directly when no options", ->
+          value = [1,25,21,1]
+          result = Codec.encode value
+          result.should.be.equal value
+          
+        it "should return value directly when no options.encoding", ->
+          value = [1,25,21,1]
+          result = Codec.encode value, {}
+          result.should.be.equal value
+          
+        it "should return value directly when options.encoding is illegal.", ->
+          value = [1,25,21,1]
+          result = Codec.encode value, {encoding: "No Such CodeC"}
+          result.should.be.equal value
+        it "should get the correct codec to encode.", ->
+          value = [1,25,21,1]
+          options = {encoding: "my"}
+          result = Codec.encode value, options
+          my = MyCodec()
+          my.encode.should.have.been.calledOnce
+          my.encode.should.have.been.calledWith value, options
+          my.encode.should.have.returned value+'encode'
+          
+        
+      describe ".decode", ->
+        it "should return value directly when no options", ->
+          value = [1,25,21,1]
+          result = Codec.decode value
+          result.should.be.equal value
+          
+        it "should return value directly when no options.encoding", ->
+          value = [1,25,21,1]
+          result = Codec.decode value, {}
+          result.should.be.equal value
+          
+        it "should return value directly when options.encoding is illegal.", ->
+          value = [1,25,21,1]
+          result = Codec.decode value, {encoding: "No Such CodeC"}
+          result.should.be.equal value
+
+        it "should get the correct codec to decode.", ->
+          value = [1,25,21,1]
+          options = {encoding: "my"}
+          result = Codec.decode value, options
+          my = MyCodec()
+          my.decode.should.have.been.calledOnce
+          my.decode.should.have.been.calledWith value, options
+          my.decode.should.have.returned value+'decode'

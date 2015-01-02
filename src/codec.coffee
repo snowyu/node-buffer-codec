@@ -59,8 +59,8 @@ class BinaryCodec
           arr.length
 
   _decodeBuffer: (data, start, end)->
-    if not data? or not (start? and end) or not data.slice
-      data
-    else
+    if data? and start? and end and data.slice
       data.slice(start, end)
+    else
+      data
 

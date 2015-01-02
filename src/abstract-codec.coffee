@@ -58,6 +58,7 @@ module.exports = class Codec
       if not @buffer or aBufferSize > @buffer.length
         @buffer = new Buffer(aBufferSize)
       @bufferSize = aBufferSize
+    @buffer
   isBuffer: ()->
     @buffer?
   encodeString: (value)->
@@ -73,7 +74,7 @@ module.exports = class Codec
       @_decodeString str
     else if @_decodeBuffer
       len = @buffer.write str
-      @_decodeBuffer(@buffer, 0, len)
+      @decodeBuffer(@buffer, 0, len)
     else
       throw new NotImplementedError()
   encodeBuffer: (value, destBuffer, offset=0, encoding='utf8')->
@@ -102,8 +103,40 @@ module.exports = class Codec
       @_decodeString buffer.toString(encoding, start, end)
     else
       throw new NotImplementedError()
-  encode: @::encodeString
-  decode: @::decodeString
+  ensureEncodeBuffer: (buffer, encoding='utf8') ->
+    len = @encodeBuffer buffer, null, 0, encoding
+    destBuffer = @init(len)
+    len = @encodeBuffer buffer, destBuffer, 0, encoding
+    destBuffer.slice(0, len)
+  encode: (value, options)->
+    options ||= {}
+    if options.buffer
+      if options.buffer is true
+        @ensureEncodeBuffer value, options.bufferEncoding
+      else
+        @encodeBuffer value, options.buffer, options.bufferOffset, options.bufferEncoding
+    else
+      @encodeString value
+  decode: (value, options)->
+    options ||= {}
+    if isBuffer value
+      @decodeBuffer value, options.bufferStart, options.bufferEnd, options.bufferEncoding
+    else
+      @decodeString value
+  @encode: (value, options)->
+    return value unless options and options.encoding
+    encoding = options.encoding
+    if encoding not instanceof Codec
+      encoding = Codec(encoding)
+      return value unless encoding
+    encoding.encode(value, options)
+  @decode: (value, options)->
+    return value unless options and options.encoding
+    encoding = options.encoding
+    if encoding not instanceof Codec
+      encoding = Codec(encoding)
+      return value unless encoding
+    encoding.decode value, options
   @getNameFromClass: (aCodecClass)->
     codecName = aCodecClass.name
     len = codecName.length
