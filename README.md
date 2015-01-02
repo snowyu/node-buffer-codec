@@ -36,6 +36,7 @@ Add the String/Buffer codec to the [abstract-nosql](https://github.com/snowyu/ab
     * it's avaiable only when constructor passed bufferSize argument or \_encodeBuffer implenmented only.
   * bufferSize: the default max interal buffer size.
   * isBuffer(): it's true if have a interal buffer.
+  * byteLength(value): return the byte length of the value.
 
 
 
@@ -83,6 +84,8 @@ class TextCodec
     else
       String(data)
   _decodeString: (data)->data
+  byteLength: (data)->
+    if data? then data.length || String(data).length else 0
 
 class JsonCodec
   register JsonCodec, TextCodec
@@ -90,6 +93,7 @@ class JsonCodec
   constructor: -> return super
   _encodeString: JSON.stringify
   _decodeString: JSON.parse
+  byteLength: (data)->@_encodeString(data).length
 
 
 # Using:
@@ -125,6 +129,7 @@ data = json.decodeBuffer(buf, 0, bufLen)
 
 * Text Codec: encode via toString() , decode return the data directly.
   * Json Codec: encode via JSON.stringify(.toJSON), decode via JSON.parse
+  * Hex Codec: hex string to Binary.
 * Binary Codec:
   * encodeBuffer: encode string or array to a buffer.
   * decodeBuffer: return the buffer directly.

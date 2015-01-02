@@ -61,12 +61,19 @@ module.exports = class Codec
     @buffer
   isBuffer: ()->
     @buffer?
+  byteLength: (value)->
+    if @_encodeBuffer
+      @encodeBuffer value
+    else if @_encodeString
+      @_encodeString(value).length
+    else
+      throw new NotImplementedError()
   encodeString: (value)->
     if @_encodeString
       @_encodeString value
     else if @_encodeBuffer
       len = @_encodeBuffer(value, @buffer)
-      @buffer.toString(undefined, 0, len)
+      @buffer.toString(@bufferEncoding, 0, len)
     else
       throw new NotImplementedError()
   decodeString: (str)->
