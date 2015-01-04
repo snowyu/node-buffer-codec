@@ -110,6 +110,10 @@ describe "Codec", ->
           my = Codec(myCodec, 900)
           my.should.be.equal myCodec
           my.bufferSize.should.at.least 900
+        it "should return undefined for unkown codec name", ->
+          myCodec = Codec('Notfound')
+          should.not.exist myCodec
+
 
       describe ".aliases", ->
         class MyAliasCodec
