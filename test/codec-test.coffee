@@ -242,6 +242,11 @@ describe "BinaryCodec", ->
       buf = new Buffer(4096)
       len = codec.encodeBuffer data, buf
       buf.slice(0, len).toString().should.be.equal data
+    it "should encode hex string to buffer", ->
+      data = "01020304"
+      buf = new Buffer(4096)
+      len = codec.encodeBuffer data, buf, 'hex'
+      buf.slice(0, len).toString().should.be.equal '\x01\x02\x03\x04'
   describe ".decodeBuffer", ->
     it "should decode a buffer", ->
       expected = 'ok,hi!'

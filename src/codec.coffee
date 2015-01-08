@@ -115,7 +115,7 @@ class BinaryCodec
           data.copy destBuffer, offset, 0, len
           len
         else if isString data
-          destBuffer.write(data, offset, undefined, encoding)
+          destBuffer.write(data, offset, encoding)
         else
           offset = 0 unless offset > 0
           arr = arraySlice.call(data)

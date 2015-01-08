@@ -91,6 +91,9 @@ module.exports = class Codec
     else
       throw new NotImplementedError()
   encodeBuffer: (value, destBuffer, offset=0, encoding='utf8')->
+    if isString offset
+      encoding = offset
+      offset = 0
     if @_encodeBuffer
       @_encodeBuffer value, destBuffer, offset, encoding
     else if @_encodeString
@@ -102,7 +105,7 @@ module.exports = class Codec
           result.copy destBuffer, offset, 0, len
           len
         else
-          destBuffer.write(result, offset, undefined, encoding)
+          destBuffer.write(result, offset, encoding)
       else if resultIsBuffer
         result.length
       else
