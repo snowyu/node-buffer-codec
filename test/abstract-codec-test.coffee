@@ -184,3 +184,15 @@ describe "Codec", ->
           my.decode.should.have.been.calledOnce
           my.decode.should.have.been.calledWith value, options
           my.decode.should.have.returned value+'decode'
+
+      describe ".escapeString", ->
+        escapeString = Codec.escapeString
+        it 'should escape string with default unSafeChars', ->
+            escapeString("你好/世界.属性%动作").should.equal "你好/世界.属性%25动作"
+        it 'should escape string with custom unSafeChars', ->
+            escapeString("你/好0世界 属性@动作", "0 ").should.equal "你/好%30世界%20属性@动作"
+      describe ".unescapeString", ->
+        unescapeString = Codec.unescapeString
+        it 'should unescape string', ->
+            unescapeString("你好%2f世界%2e属性%40动作").should.equal "你好/世界.属性@动作"
+

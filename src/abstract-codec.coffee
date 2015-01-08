@@ -3,6 +3,7 @@ util                  = require("abstract-object/lib/util")
 inherits              = util.inherits
 isInheritedFrom       = util.isInheritedFrom
 isNumber              = util.isNumber
+isString              = util.isString
 createObject          = util.createObject
 Errors                = require('abstract-object/Error')
 createError           = Errors.createError
@@ -186,14 +187,13 @@ module.exports = class Codec
   @escapeString = escapeString = (aString, aUnSafeChars) ->
     return aString if !isString(aString) or aString.length == 0
     aUnSafeChars = UNSAFE_CHARS unless aUnSafeChars?
-
     result = ""
-    for c, i in aString.length
-      result += if (aUnSafeChars.indexOf(c) >= 0) 
-        "%" + aString.charCodeAt(i).toString(16)
+    for c in aString
+      result += if aUnSafeChars.indexOf(c) >= 0
+        "%" + aString.charCodeAt(_i).toString(16)
       else
         c
-    return result;
+    result
   @unescapeString = unescapeString = decodeURIComponent
   ###
    * Count bytes in a string's UTF-8 representation.
