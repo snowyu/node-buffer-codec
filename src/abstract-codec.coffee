@@ -126,18 +126,22 @@ module.exports = class Codec
     @options = options
     if options.buffer
       if options.buffer is true
-        @ensureEncodeBuffer value, options.bufferEncoding
+        result = @ensureEncodeBuffer value, options.bufferEncoding
       else
-        @encodeBuffer value, options.buffer, options.bufferOffset, options.bufferEncoding
+        result = @encodeBuffer value, options.buffer, options.bufferOffset, options.bufferEncoding
     else
-      @encodeString value
+      result = @encodeString value
+    delete @options
+    result
   decode: (value, options)->
     options ||= {}
     @options = options
     if isBuffer value
-      @decodeBuffer value, options.bufferStart, options.bufferEnd, options.bufferEncoding
+      result = @decodeBuffer value, options.bufferStart, options.bufferEnd, options.bufferEncoding
     else
-      @decodeString value
+      result = @decodeString value
+    delete @options
+    result
   @encode: (value, options)->
     return value unless options and options.encoding
     encoding = options.encoding
