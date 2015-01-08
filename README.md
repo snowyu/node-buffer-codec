@@ -1,9 +1,10 @@
-# AbstractCodec [![Build Status](https://secure.travis-ci.org/snowyu/node-buffer-codec.png?branch=master)](http://travis-ci.org/snowyu/node-buffer-codec) [![npm](https://img.shields.io/npm/v/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) [![downloads](https://img.shields.io/npm/dm/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) [![license](https://img.shields.io/npm/l/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) 
+# AbstractCodec [![Build Status](https://img.shields.io/travis/snowyu/node-buffer-codec/master.svg)](http://travis-ci.org/snowyu/node-buffer-codec) [![npm](https://img.shields.io/npm/v/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) [![downloads](https://img.shields.io/npm/dm/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) [![license](https://img.shields.io/npm/l/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) 
 
 Add the String/Buffer codec to the [abstract-nosql](https://github.com/snowyu/abstract-nosql) database.
 
 * Codec
   * name: the codec name.
+  * options: the options passed via the encode/decode.
   * encode(value, options): encode the value. 
     * return the encoded string, or encoded buffer if options.buffer is true 
       * note: the return encoded buffer is a global buffer instance on the codec.
@@ -134,6 +135,9 @@ data = json.decodeBuffer(buf, 0, bufLen)
     * result is ascii string if value is array, the number element in array saved is (element & 0xFF)
       if element is not number, saved 0 instead.
   * decodeString: return the same string.
+* Bytewise Codec package: A binary string serialization which sorts bytewise for arbitrarily complex data structures, respecting [bytewise](https://github.com/deanlandolt/bytewise) structured sorting efficiently.
+  * [buffer-codec-bytewise](https://github.com/snowyu/node-buffer-codec-bytewise)
+  * npm install buffer-codec-bytewise
 
 
 
