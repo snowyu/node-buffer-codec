@@ -1,8 +1,4 @@
-# AbstractCodec
-
-[![Build Status](https://secure.travis-ci.org/snowyu/node-buffer-codec.png?branch=master)](http://travis-ci.org/snowyu/node-buffer-codec)
-
-[![NPM](https://nodei.co/npm/buffer-codec.png?stars&downloads&downloadRank)](https://nodei.co/npm/buffer-codec/)
+# AbstractCodec [![Build Status](https://secure.travis-ci.org/snowyu/node-buffer-codec.png?branch=master)](http://travis-ci.org/snowyu/node-buffer-codec) [![npm](https://img.shields.io/npm/v/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) [![downloads](https://img.shields.io/npm/dm/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) [![license](https://img.shields.io/npm/l/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) 
 
 Add the String/Buffer codec to the [abstract-nosql](https://github.com/snowyu/abstract-nosql) database.
 
