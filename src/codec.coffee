@@ -1,4 +1,4 @@
-# Copyright (c) 2014 Riceball LEE, MIT License
+# Copyright (c) 2014-2015 Riceball LEE, MIT License
 util        = require("abstract-object/lib/util")
 Errors      = require('abstract-object/Error')
 Codec       = module.exports = require './abstract-codec'
@@ -59,6 +59,14 @@ class HexCodec
     throw new InvalidFormatError('invalid hex string.') if length % 2 isnt 0
     length = length >> 1
     if isBuffer destBuffer
+      length = destBuffer.write data, offset, length, 'hex'
+    length
+  _encodeBuffer2: (data, destBuffer, offset, encoding)->
+    offset = Number(offset) || 0
+    length = data.length
+    throw new InvalidFormatError('invalid hex string.') if length % 2 isnt 0
+    length = length >> 1
+    if isBuffer destBuffer
       i = destBuffer.length - offset
       length = i if length > i
       i = 0
@@ -69,6 +77,8 @@ class HexCodec
         i++
     length
   _decodeBuffer: (buf, start, end)->
+    buf.toString 'hex', start, end
+  _decodeBuffer2: (buf, start, end)->
     len = buf.length
     start = 0 if !start or start < 0
     end = len if !end or end < 0 or end > len
