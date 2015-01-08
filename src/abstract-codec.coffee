@@ -120,6 +120,7 @@ module.exports = class Codec
     destBuffer.slice(0, len)
   encode: (value, options)->
     options ||= {}
+    @options = options
     if options.buffer
       if options.buffer is true
         @ensureEncodeBuffer value, options.bufferEncoding
@@ -129,6 +130,7 @@ module.exports = class Codec
       @encodeString value
   decode: (value, options)->
     options ||= {}
+    @options = options
     if isBuffer value
       @decodeBuffer value, options.bufferStart, options.bufferEnd, options.bufferEncoding
     else
