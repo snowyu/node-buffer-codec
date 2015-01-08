@@ -142,7 +142,6 @@ describe "JsonCodec", ->
 
 describe "HexCodec", ->
   codec = Codec('hex')
-  console.log codec.name
   
   toHex = (str)->
     i = 0
