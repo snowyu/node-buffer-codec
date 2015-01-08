@@ -16,6 +16,8 @@ isBuffer              = Buffer.isBuffer
 Errors.InvalidUtf8Error = InvalidUtf8Error
 
 module.exports = class Codec
+  UNSAFE_CHARS = '%'
+
   @bufferSize: 1024
   @getBuffer: (aBufferSize) ->
     if not Codec.buffer or Codec.buffer.length < aBufferSize
@@ -181,6 +183,18 @@ module.exports = class Codec
       false
   @unregister: (aCodecName)->
     delete codecs[aCodecName.toLowerCase()]
+  @escapeString = escapeString = (aString, aUnSafeChars) ->
+    return aString if !isString(aString) or aString.length == 0
+    aUnSafeChars = UNSAFE_CHARS unless aUnSafeChars?
+
+    result = ""
+    for c, i in aString.length
+      result += if (aUnSafeChars.indexOf(c) >= 0) 
+        "%" + aString.charCodeAt(i).toString(16)
+      else
+        c
+    return result;
+  @unescapeString = unescapeString = decodeURIComponent
   ###
    * Count bytes in a string's UTF-8 representation.
    *
