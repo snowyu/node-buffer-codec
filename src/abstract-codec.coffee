@@ -77,20 +77,20 @@ module.exports = class Codec
       @_encodeString(value).length
     else
       throw new NotImplementedError()
-  encodeString: (value)->
+  encodeString: (value, bufferEncoding = 'utf8')->
     if @_encodeString
       @_encodeString value
     else if @_encodeBuffer
-      len = @_encodeBuffer(value, @buffer)
-      @buffer.toString(@bufferEncoding, 0, len)
+      len = @_encodeBuffer(value, @buffer, 0)
+      @buffer.toString(bufferEncoding, 0, len)
     else
       throw new NotImplementedError()
-  decodeString: (str)->
+  decodeString: (str, bufferEncoding = 'utf8')->
     if @_decodeString
       @_decodeString str
     else if @_decodeBuffer
       len = @buffer.write str
-      @decodeBuffer(@buffer, 0, len)
+      @decodeBuffer(@buffer, 0, len, bufferEncoding)
     else
       throw new NotImplementedError()
   encodeBuffer: (value, destBuffer, offset=0, encoding='utf8')->
@@ -136,7 +136,7 @@ module.exports = class Codec
       else
         result = @encodeBuffer value, options.buffer, options.bufferOffset, options.bufferEncoding
     else
-      result = @encodeString value
+      result = @encodeString value, options.bufferEncoding
     delete @options
     result
   decode: (value, options)->
@@ -145,7 +145,7 @@ module.exports = class Codec
     if isBuffer value
       result = @decodeBuffer value, options.bufferStart, options.bufferEnd, options.bufferEncoding
     else
-      result = @decodeString value
+      result = @decodeString value, options.bufferEncoding
     delete @options
     result
   @encode: (value, options)->

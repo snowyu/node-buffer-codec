@@ -222,8 +222,16 @@ describe "BinaryCodec", ->
       data = "string A"
       str = codec.encodeString data
       str.should.be.equal data
+    it "should encode string with hex encoding", ->
+      data = "string A"
+      str = codec.encodeString data, 'hex'
+      str.should.be.equal '737472696e672041'
     it "should encode array to a string", ->
       data = [1,2,3]
+      str = codec.encodeString data
+      str.should.be.equal "\x01\x02\x03"
+    it "should encode buffer to a string", ->
+      data = new Buffer [1,2,3]
       str = codec.encodeString data
       str.should.be.equal "\x01\x02\x03"
   describe ".decodeString", ->
@@ -253,10 +261,18 @@ describe "BinaryCodec", ->
       buf = toBuffer expected
       codec.decodeBuffer(buf).toString().should.be.equal expected
   describe ".encode", ->
-    it "should encode value to a string", ->
+    it "should encode array to a string", ->
       data = [1,2,3]
       str = codec.encode data
       str.should.be.equal "\x01\x02\x03"
+    it "should encode buffer to a string", ->
+      data = new Buffer [1,2,3]
+      str = codec.encode data
+      str.should.be.equal "\x01\x02\x03"
+    it "should encode string with hex encoding", ->
+      data = "string A"
+      str = codec.encode data, bufferEncoding:'hex'
+      str.should.be.equal '737472696e672041'
     it "should encode value to a specified buffer", ->
       data = "some thing need encode"
       # get the byte length of encoded data
