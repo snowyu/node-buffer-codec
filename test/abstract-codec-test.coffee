@@ -113,6 +113,9 @@ describe "Codec", ->
         it "should return undefined for unkown codec name", ->
           myCodec = Codec('Notfound')
           should.not.exist myCodec
+        it "should return undefined for illegal codec name argument", ->
+          myCodec = Codec()
+          should.not.exist myCodec
 
 
       describe ".aliases", ->

@@ -41,7 +41,10 @@ module.exports = class Codec
     if not (this instanceof Codec)
       # arguments.callee is forbidden if strict mode enabled.
       if not aCodecName
-        try aCodecName = Codec.getNameFromClass(arguments.callee.caller)
+        if isInheritedFrom (aCodecName = arguments.callee.caller), Codec
+          try aCodecName = Codec.getNameFromClass(aCodecName)
+        else
+          return
       aCodecName = aCodecName.toLowerCase()
       result = codecs[aCodecName]
       if not result?
