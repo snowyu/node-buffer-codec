@@ -5,8 +5,6 @@ should          = chai.should()
 expect          = chai.expect
 Codec           = require '../src/codec'
 Errors          = require 'abstract-object/Error'
-util            = require 'abstract-object/util'
-inherits        = util.inherits
 setImmediate    = setImmediate || process.nextTick
 
 chai.use(sinonChai)

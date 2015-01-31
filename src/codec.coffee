@@ -1,8 +1,7 @@
 # Copyright (c) 2014-2015 Riceball LEE, MIT License
-util        = require("abstract-object/lib/util")
 Errors      = require('abstract-object/Error')
 Codec       = module.exports = require './abstract-codec'
-isString    = util.isString
+isString    = require("abstract-object/lib/util/isString")
 register    = Codec.register
 aliases     = Codec.aliases
 isBuffer    = Buffer.isBuffer

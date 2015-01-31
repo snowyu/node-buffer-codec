@@ -16,7 +16,7 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "abstract-object": "1.x"
+    "abstract-object": "~1.8.1"
   },
   "devDependencies": {
     "chai": "~1.10.0",

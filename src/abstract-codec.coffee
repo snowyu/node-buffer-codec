@@ -1,10 +1,9 @@
 # Copyright (c) 2014 Riceball LEE, MIT License
-util                  = require("abstract-object/lib/util")
-inherits              = util.inherits
-isInheritedFrom       = util.isInheritedFrom
-isNumber              = util.isNumber
-isString              = util.isString
-createObject          = util.createObject
+inherits              = require("abstract-object/lib/util/inherits")
+isInheritedFrom       = require("abstract-object/lib/util/isInheritedFrom")
+isNumber              = require("abstract-object/lib/util/isNumber")
+isString              = require("abstract-object/lib/util/isString")
+createObject          = require("abstract-object/lib/util/createObject")
 Errors                = require('abstract-object/Error')
 createError           = Errors.createError
 AbstractError         = Errors.AbstractError
