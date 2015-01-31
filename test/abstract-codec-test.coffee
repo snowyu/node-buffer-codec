@@ -65,6 +65,22 @@ describe "Codec", ->
           myCodec.should.be.instanceOf Codec
           MyCodec = getClass 'MyNew', MyNewCodec
           MyCodec.should.have.property 'mynewsub', MyNewSubCodec
+        it "should get an instance via the child Codec class directly.", ->
+          MyNewSubCodec = Codec['mynewsub']
+          class MyNewSub1Codec
+            register(MyNewSub1Codec, MyNewSubCodec).should.be.ok
+
+            constructor: -> return super
+
+          myCodec = Codec('myNewSub1')
+          should.exist myCodec
+          myCodec.should.be.instanceOf MyNewSub1Codec
+          myCodec.should.be.instanceOf MyNewSubCodec
+          myCodec.should.be.instanceOf MyNewCodec
+          myCodec.should.be.instanceOf Codec
+          my = MyNewSub1Codec 123456
+          testCodecInstance my, MyNewSub1Codec, 123456
+          my.should.be.equal myCodec
         it "should register a new Codec Class with parent Codec Class and specified buffSize.", ->
           class MyBufferSubCodec
             register(MyBufferSubCodec, MyBufferCodec, 32).should.be.ok

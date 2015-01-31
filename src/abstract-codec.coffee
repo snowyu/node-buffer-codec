@@ -41,10 +41,15 @@ module.exports = class Codec
     if not (this instanceof Codec)
       # arguments.callee is forbidden if strict mode enabled.
       if not aCodecName
-        if isInheritedFrom (aCodecName = arguments.callee.caller), Codec
-          try aCodecName = Codec.getNameFromClass(aCodecName)
-        else
-          return
+        # maybe the child codec is createing an instance.
+        # arguments.callee is forbidden if strict mode enabled.
+        try vCaller = arguments.callee.caller
+        if vCaller
+          while isInheritedFrom vCaller, Codec
+            aCodecName = vCaller
+            vCaller = vCaller.caller
+          aCodecName = Codec.getNameFromClass(aCodecName) if aCodecName
+        return unless aCodecName
       aCodecName = aCodecName.toLowerCase()
       result = codecs[aCodecName]
       if not result?
@@ -68,6 +73,8 @@ module.exports = class Codec
         @buffer = new Buffer(aBufferSize)
       @bufferSize = aBufferSize
     @buffer
+  toString: ->
+    @name.toLowerCase()
   isBuffer: ()->
     @buffer?
   byteLength: (value)->
