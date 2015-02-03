@@ -1,6 +1,6 @@
 {
   "name": "buffer-codec",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "description": "add the codec ability to abstract-nosql database.",
   "homepage": "https://github.com/snowyu/node-buffer-codec",
   "main": "./index",
