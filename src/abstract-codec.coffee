@@ -1,9 +1,6 @@
-# Copyright (c) 2014 Riceball LEE, MIT License
-inherits              = require("abstract-object/lib/util/inherits")
-isInheritedFrom       = require("abstract-object/lib/util/isInheritedFrom")
-isNumber              = require("abstract-object/lib/util/isNumber")
+# Copyright (c) 2014-2015 Riceball LEE, MIT License
+factory               = require("custom-factory")
 isString              = require("abstract-object/lib/util/isString")
-createObject          = require("abstract-object/lib/util/createObject")
 Errors                = require('abstract-object/Error')
 createError           = Errors.createError
 AbstractError         = Errors.AbstractError
@@ -16,6 +13,8 @@ isBuffer              = Buffer.isBuffer
 Errors.InvalidUtf8Error = InvalidUtf8Error
 
 module.exports = class Codec
+  factory Codec
+
   UNSAFE_CHARS = '%'
 
   @bufferSize: 1024
@@ -26,46 +25,9 @@ module.exports = class Codec
       Codec.bufferSize = aBufferSize
       
     Codec.buffer
-  @_codecs: {}
-  @_aliases: {}
-  codecs = Codec._codecs
-  aliases = Codec._aliases
-  constructor: (aCodecName, aBufferSize)->
-    if isNumber aCodecName
-      aBufferSize = aCodecName
-      aCodecName = null
-    else if aCodecName instanceof Codec
-      aCodecName.init(aBufferSize) if aBufferSize > 0
-      return aCodecName
-    if not (this instanceof Codec)
-      # arguments.callee is forbidden if strict mode enabled.
-      if not aCodecName
-        # maybe the child codec is createing an instance.
-        # arguments.callee is forbidden if strict mode enabled.
-        try vCaller = arguments.callee.caller
-        if vCaller
-          while isInheritedFrom vCaller, Codec
-            aCodecName = vCaller
-            vCaller = vCaller.caller
-          aCodecName = Codec.getNameFromClass(aCodecName) if aCodecName
-        return unless aCodecName
-      aCodecName = aCodecName.toLowerCase()
-      result = codecs[aCodecName]
-      if not result?
-        alias = aCodecName
-        aCodecName = Codec.getRealNameFromAlias alias
-        if aCodecName
-          result = codecs[aCodecName]
-      if result instanceof Codec
-        result.init(aBufferSize) if aBufferSize > 0
-      else if result
-        result = Math.max result, aBufferSize if aBufferSize > 0
-        result = undefined if result < 0 or result is NaN
-        result = codecs[aCodecName] = createObject Codec[aCodecName], result
-      return result
-    else
-      @init(aBufferSize)
-  init: (aBufferSize)->
+  @formatName: (aName)->aName.toLowerCase()
+  constructor: (aCodecName, aBufferSize)->return super
+  initialize: (aBufferSize)->
     if @_encodeBuffer or aBufferSize > 0
       aBufferSize ||= Codec.bufferSize
       if not @buffer or aBufferSize > @buffer.length
@@ -130,7 +92,7 @@ module.exports = class Codec
       throw new NotImplementedError()
   ensureEncodeBuffer: (buffer, encoding='utf8') ->
     len = @encodeBuffer buffer, null, 0, encoding
-    destBuffer = @init(len)
+    destBuffer = @initialize(len)
     len = @encodeBuffer buffer, destBuffer, 0, encoding
     destBuffer.slice(0, len)
   encode: (value, options)->
@@ -168,38 +130,6 @@ module.exports = class Codec
       encoding = Codec(encoding)
       return value unless encoding
     encoding.decode value, options
-  @getNameFromClass: (aCodecClass)->
-    codecName = aCodecClass.name
-    len = codecName.length
-    throw new InvalidArgumentError('the codec(construcor) has no name error.') unless len
-    codecName = codecName.substring(0, len-5) if len > 5 and codecName.substring(len-5).toLowerCase() is 'codec'
-    codecName
-  @getRealNameFromAlias: (alias)->
-    aliases[alias]
-  @alias: (aCodecClass, aAliases...)->
-    codecName = Codec.getNameFromClass(aCodecClass)
-    lowerName = codecName.toLowerCase()
-    if codecs.hasOwnProperty(lowerName)
-      for alias in aAliases
-        aliases[alias] = lowerName
-  @aliases: @alias
-  @register: (aCodecClass, aParentCodecClass = Codec, aBufferSize)->
-    inherits aCodecClass, aParentCodecClass
-    codecName = Codec.getNameFromClass(aCodecClass)
-    aCodecClass::name = codecName
-    lowerName = codecName.toLowerCase()
-    if isInheritedFrom(aCodecClass, Codec) and not codecs.hasOwnProperty(lowerName)
-      aParentCodecClass[lowerName] = aCodecClass
-      if aParentCodecClass isnt Codec
-        Codec[lowerName] = aCodecClass
-      if aBufferSize > 0
-        codecs[lowerName] = aBufferSize
-      else
-        codecs[lowerName] = -1 #createObject aCodecClass, aBufferSize
-    else
-      false
-  @unregister: (aCodecName)->
-    delete codecs[aCodecName.toLowerCase()]
   @escapeString = escapeString = (aString, aUnSafeChars) ->
     return aString if !isString(aString) or aString.length == 0
     aUnSafeChars = UNSAFE_CHARS unless aUnSafeChars?
