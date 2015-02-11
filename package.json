@@ -19,8 +19,8 @@
     "test"
   ],
   "dependencies": {
-    "abstract-object": "~1.8.1",
-    "custom-factory": "~1.2.3"
+    "abstract-object": "~1.9.1",
+    "custom-factory": "~1.2.8"
   },
   "devDependencies": {
     "chai": "~1.10.0",
