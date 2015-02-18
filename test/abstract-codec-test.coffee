@@ -4,7 +4,6 @@ sinonChai       = require 'sinon-chai'
 should          = chai.should()
 expect          = chai.expect
 Codec           = require '../src/abstract-codec'
-Errors          = require 'abstract-object/Error'
 setImmediate    = setImmediate || process.nextTick
 
 chai.use(sinonChai)
@@ -30,7 +29,7 @@ describe "Codec", ->
       myCodec.should.be.instanceOf Codec
       if bufSize > 0
         myCodec.bufferSize.should.be.equal bufSize
-        Buffer.isBuffer(myCodec.buffer).should.be.ok "should has Buffer"
+        Buffer.isBuffer(myCodec.buffer).should.be.equal true, "should has Buffer"
         myCodec.buffer.should.has.length.at.least bufSize
     getClass = (aName, expectedClass, bufSize)->
       MyCodec = Codec[aName.toLowerCase()]

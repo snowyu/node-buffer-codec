@@ -1,7 +1,7 @@
 # Copyright (c) 2014-2015 Riceball LEE, MIT License
 factory               = require("custom-factory")
-isString              = require("abstract-object/lib/util/isString")
-Errors                = require('abstract-object/Error')
+isString              = require("util-ex/lib/is/type/string")
+Errors                = require('abstract-error')
 createError           = Errors.createError
 AbstractError         = Errors.AbstractError
 NotImplementedError   = Errors.NotImplementedError
@@ -134,9 +134,9 @@ module.exports = class Codec
     return aString if !isString(aString) or aString.length == 0
     aUnSafeChars = UNSAFE_CHARS unless aUnSafeChars?
     result = ""
-    for c in aString
+    for c, i in aString
       result += if aUnSafeChars.indexOf(c) >= 0
-        "%" + aString.charCodeAt(_i).toString(16)
+        "%" + aString.charCodeAt(i).toString(16)
       else
         c
     result

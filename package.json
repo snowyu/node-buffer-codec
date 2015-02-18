@@ -19,12 +19,12 @@
     "test"
   ],
   "dependencies": {
-    "abstract-object": "~1.9.1",
-    "custom-factory": "~1.2.8"
+    "abstract-error": "^1.0.1",
+    "custom-factory": "~1.2.8",
+    "util-ex": "^0.2.8"
   },
   "devDependencies": {
-    "chai": "~1.10.0",
-    "coffee-script": "~1.8.0",
+    "chai": "~2.0.0",
     "connect-livereload": "*",
     "grunt": "*",
     "grunt-contrib-clean": "*",
@@ -33,14 +33,14 @@
     "grunt-contrib-jshint": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
-    "grunt-mocha-test": "~0.12.4",
+    "grunt-mocha-test": "~0.12.7",
     "grunt-newer": "*",
     "grunt-release": "*",
     "grunt-saucelabs": "*",
-    "mocha": "~2.0.1",
-    "pre-commit": "~1.0.2",
+    "mocha": "~2.1.0",
+    "pre-commit": "~1.0.4",
     "sinon": "~1.12.2",
-    "sinon-chai": "~2.6.0",
+    "sinon-chai": "~2.7.0",
     "source-map-support": "*"
   },
   "repository": {
