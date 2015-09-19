@@ -20,7 +20,9 @@
   ],
   "dependencies": {
     "abstract-error": "^1.0.2",
+    "coffee-coverage": "^0.6.3",
     "custom-factory": "^1.5.0",
+    "istanbul": "^0.3.20",
     "util-ex": "^0.3.14"
   },
   "devDependencies": {
