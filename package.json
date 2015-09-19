@@ -1,7 +1,7 @@
 {
   "name": "buffer-codec",
   "version": "1.6.4",
-  "description": "add the codec ability to abstract-nosql database.",
+  "description": "The abstract codec class to encode/decode buffer/string.",
   "homepage": "https://github.com/snowyu/node-buffer-codec",
   "main": "./index",
   "files": [
@@ -13,7 +13,8 @@
     "lib"
   ],
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "test-cov": "mocha --reporter dot && istanbul report text-summary lcovonly"
   },
   "pre-commit": [
     "test"
@@ -52,6 +53,7 @@
     "factory",
     "custom-factory",
     "buffer",
+    "string",
     "codec",
     "encode",
     "decode",

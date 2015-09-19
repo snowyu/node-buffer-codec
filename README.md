@@ -1,27 +1,44 @@
-# AbstractCodec [![Build Status](https://img.shields.io/travis/snowyu/node-buffer-codec/master.svg)](http://travis-ci.org/snowyu/node-buffer-codec) [![npm](https://img.shields.io/npm/v/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) [![downloads](https://img.shields.io/npm/dm/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) [![license](https://img.shields.io/npm/l/buffer-codec.svg)](https://npmjs.org/package/buffer-codec) 
+# AbstractCodec [![npm][npm-svg]][npm]
 
-Add the String/Buffer codec to the [abstract-nosql](https://github.com/snowyu/abstract-nosql) database.
+[![Build Status][travis-svg]][travis]
+[![Code Climate][codeclimate-svg]][codeclimate]
+[![Test Coverage][codeclimate-test-svg]][codeclimate-test]
+[![downloads][npm-download-svg]][npm]
+[![license][npm-license-svg]][npm]
+
+[npm]: https://npmjs.org/package/node-buffer-codec
+[npm-svg]: https://img.shields.io/npm/v/node-buffer-codec.svg
+[npm-download-svg]: https://img.shields.io/npm/dm/node-buffer-codec.svg
+[npm-license-svg]: https://img.shields.io/npm/l/node-buffer-codec.svg
+[travis-svg]: https://img.shields.io/travis/snowyu/node-buffer-codec/master.svg
+[travis]: http://travis-ci.org/snowyu/node-buffer-codec
+[codeclimate-svg]: https://codeclimate.com/github/snowyu/node-buffer-codec/badges/gpa.svg
+[codeclimate]: https://codeclimate.com/github/snowyu/node-buffer-codec
+[codeclimate-test-svg]: https://codeclimate.com/github/snowyu/node-buffer-codec/badges/coverage.svg
+[codeclimate-test]: https://codeclimate.com/github/snowyu/node-buffer-codec/coverage
+
+The abstract codec class to encode/decode buffer/string.
 
 * Codec
   * name: the codec name.
   * options: the options passed via the encode/decode.
-  * encode(value, options): encode the value. 
-    * return the encoded string, or encoded buffer if options.buffer is true 
+  * encode(value, options): encode the value.
+    * return the encoded string, or encoded buffer if options.buffer is true
       * note: the return encoded buffer is a global buffer instance on the codec.
     * return the byte length of encoded value if options.buffer is true or is a Buffer.
     * options.encoding *(string or codec instance)*: return the value directly if no encoding
     * options.buffer: the destBuffer or true.
-      * options.bufferEncoding *(string)*: the Buffer encoding used via Buffer. defaults to 'utf8' 
+      * options.bufferEncoding *(string)*: the Buffer encoding used via Buffer. defaults to 'utf8'
       * options.bufferOffset *(int)*: the offset of destBuffer. defaults to 0. if options.buffer is a Buffer.
   * decode(value, options): decode the value.
-    * return the decoded value. 
+    * return the decoded value.
     * options.encoding *(string or codec instance)*: return the value directly if no encoding
     * if value is Buffer:
-      * options.bufferEncoding *(string)*: the Buffer encoding used via value is Buffer. defaults to 'utf8' 
+      * options.bufferEncoding *(string)*: the Buffer encoding used via value is Buffer. defaults to 'utf8'
       * options.bufferStart *(int)*: the start of value. defaults to 0.
       * options.bufferEnd *(int)*: the end of value. defaults to value.length - options.bufferStart.
-  * encodeString(value): encode the value. return the encoded string. 
-  * decodeString(aString): decode the string(value). return the decoded value. 
+  * encodeString(value): encode the value. return the encoded string.
+  * decodeString(aString): decode the string(value). return the decoded value.
   * encodeBuffer(value, destBuffer, offset=0, encoding='utf8'):
     * encode value to the destBuffer. return the encoded length.
     * it just return the encoded byte length if the destBuffer is null
@@ -29,7 +46,7 @@ Add the String/Buffer codec to the [abstract-nosql](https://github.com/snowyu/ab
   * decodeBuffer(buffer, start, end, encoding='utf8'):
     * decode the buffer. return the decoded value.
     * the default start is 0, end is buffer.length - start.
-  * buffer: the Buffer instance. 
+  * buffer: the Buffer instance.
     * it's avaiable only when constructor passed bufferSize argument or \_encodeBuffer implenmented only.
   * bufferSize: the default max interal buffer size.
   * isBuffer(): it's true if have a interal buffer.
@@ -55,9 +72,9 @@ assert.equal(json.decode(encodedData), data)
 you should implenment:
 
 * \_encodeString/\_decodeString or \_encodeBuffer/\_decodeBuffer
-  * \_encodeString(value): encode the value. return the encoded string. 
-  * \_decodeString(value): decode the string(value). return the decoded value. 
-  * \_encodeBuffer(value, destBuffer, offset=0, encoding='utf8'): 
+  * \_encodeString(value): encode the value. return the encoded string.
+  * \_decodeString(value): decode the string(value). return the decoded value.
+  * \_encodeBuffer(value, destBuffer, offset=0, encoding='utf8'):
     * encode value to the destBuffer. return the encoded length.
     * it just return the encoded byte length if the destBuffer is null
     * the default start is 0 offset of destBuffer.
@@ -113,7 +130,7 @@ json2 = new JsonCodec()
 
 json2.should.not.be.equal json
 
-# reuse this buffer instead of create every once. 
+# reuse this buffer instead of create every once.
 buf = new Buffer(8192)
 
 bufLen = json.encodeBuffer({a:1,b:2}, buf)
@@ -130,7 +147,7 @@ data = json.decodeBuffer(buf, 0, bufLen)
 * Binary Codec:
   * encodeBuffer: encode string or array to a buffer.
   * decodeBuffer: return the buffer directly.
-  * encodeString: 
+  * encodeString:
     * result is the same string if value is string
     * result is ascii string if value is array, the number element in array saved is (element & 0xFF)
       if element is not number, saved 0 instead.
