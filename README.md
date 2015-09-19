@@ -6,10 +6,10 @@
 [![downloads][npm-download-svg]][npm]
 [![license][npm-license-svg]][npm]
 
-[npm]: https://npmjs.org/package/node-buffer-codec
-[npm-svg]: https://img.shields.io/npm/v/node-buffer-codec.svg
-[npm-download-svg]: https://img.shields.io/npm/dm/node-buffer-codec.svg
-[npm-license-svg]: https://img.shields.io/npm/l/node-buffer-codec.svg
+[npm]: https://npmjs.org/package/buffer-codec
+[npm-svg]: https://img.shields.io/npm/v/buffer-codec.svg
+[npm-download-svg]: https://img.shields.io/npm/dm/buffer-codec.svg
+[npm-license-svg]: https://img.shields.io/npm/l/buffer-codec.svg
 [travis-svg]: https://img.shields.io/travis/snowyu/node-buffer-codec/master.svg
 [travis]: http://travis-ci.org/snowyu/node-buffer-codec
 [codeclimate-svg]: https://codeclimate.com/github/snowyu/node-buffer-codec/badges/gpa.svg
